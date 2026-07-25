@@ -85,28 +85,39 @@ El sistema usa un grafo de 4 nodos LangGraph que procesa cada mensaje del usuari
 Usuario (chat o CV subido)
          │
          ▼
-┌──────────────────────────────┐
-│ 1. EXTRACTOR (LLM)           │
-│    Extrae campos del mensaje │
-└──────────┬───────────────────┘
+┌────────────────────────────────┐
+│ 1. EXTRACTOR (LLM)             │
+│    Extrae campos del mensaje   │
+└──────────┬─────────────────────┘
            │
-           ▼
-┌──────────────────────────────┐
-│ 2. MAPPER (LLM)              │
-│    Normaliza valores         │
-└──────────┬───────────────────┘
-           │
-           ▼
-┌──────────────────────────────┐
-│ 3. ORCHESTRATOR (Python)     │
-│    Merge + Validate + Navegar│
-│    (CriticalFieldValidator)  │
-└──────────┬───────────────────┘
-           │
-           ▼
+     ┌─────┴─────────────────────┐
+     ▼                           ▼
+  ¿Extrajo                  No extrajo
+  campos?                     campos
+     │                          │
+     ▼                          │
+┌──────────────────────┐        │
+│ 2. MAPPER (LLM)      │        │
+│    Normaliza valores │        │
+│    (solo si hay      │        │
+│     propiedades)     │        │
+└──────────┬───────────┘        │
+           │                    │
+           ▼                    │
+┌──────────────────────────┐    │
+│ 3. ORCHESTRATOR (Python) │    │
+│    Merge + Validate      │    │
+│    + Navegar             │    │
+└──────────┬───────────────┘    │
+           │                    │
+           └──────┬─────────────┘
+                  ▼
 ┌──────────────────────────────┐
 │ 4. WRITER (LLM)              │
 │    Respuesta humana + tool   │
+│    (usa system prompt,       │
+│     context e input del      │
+│     usuario para responder)  │
 └──────────┬───────────────────┘
            │
     ┌─── ¿Profile Complete? ───┐
@@ -126,8 +137,10 @@ Respuesta final +        Sigue conversando
 
 ### Flujo Detallado
 
-1. **Conversación turno a turno**: El usuario conversa con el asistente. Cada mensaje pasa por los 4 nodos LangGraph que extraen, normalizan, validan y persisten atributos del perfil.
+1. **Conversación turno a turno**: El usuario conversa con el asistente. Cada mensaje pasa por el pipeline LangGraph. Si el extractor encuentra campos nuevos en el mensaje, se activa el mapper y orchestrator para normalizar, validar y persistir. Si el usuario solo hace una pregunta o comenta sobre campos previos sin aportar datos nuevos, el flujo salta directamente al **Writer**, que responde basado en el system prompt, el historial de contexto y el input del usuario.
+
 2. **Upload de CV**: El estudiante puede subir su CV en PDF. Se convierte a Markdown vía `pymupdf4llm`, se extraen campos estructurados con LLM, y se persisten. Luego continúa la conversación para llenar campos faltantes.
+
 3. **Cierre + Recomendación**: Cuando el perfil está completo y el usuario confirma, el sistema ejecuta el **Recommendation Engine**: recolecta el perfil completo, consulta tendencias del mercado laboral vía MCP/WebSearch, carga el catálogo de especializaciones, y genera máximo 3 recomendaciones personalizadas.
 
 ## Schema de Datos del Perfil
