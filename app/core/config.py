@@ -28,6 +28,11 @@ class Settings(BaseSettings):
     LANGCHAIN_API_KEY: str = ""
     LANGCHAIN_PROJECT: str = "career-path-advisor"
 
+    ACCESS_KEY_ID: str = ""
+    SECRET_ACCESS_KEY: str = ""
+    BUCKET_NAME: str = ""
+    S3_ENDPOINT_URL: str = ""
+
     ENCRYPTION_KEY: str = ""
 
     @property
