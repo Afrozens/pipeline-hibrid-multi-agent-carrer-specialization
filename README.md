@@ -2,6 +2,8 @@
 
 **Career Path Advisor** es un sistema conversacional multi-agente basado en LangGraph que guía a estudiantes universitarios (Ing. Informática, Ing. Sistemas, autodidactas) a descubrir su especialización ideal en tecnología. Evalúa su perfil académico, experiencia laboral, habilidades técnicas, intereses personales y los cruza con tendencias actuales del mercado laboral tech para generar hasta 3 recomendaciones personalizadas.
 
+![Career Path Advisor - Arquitectura](https://i.imgur.com/McyRSoY.png)
+
 ## Stack
 
 | Componente | Tecnología |
