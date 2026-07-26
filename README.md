@@ -261,6 +261,9 @@ POSTGRES_PORT=5432
 POSTGRES_DB=career_advisor
 DATABASE_URI=
 
+# API Key (protege todos los endpoints excepto /health)
+API_KEY=sk-your-secret-api-key
+
 # WebSearch (opcional — para tendencias de mercado)
 TAVILY_API_KEY=tvly-xxx
 

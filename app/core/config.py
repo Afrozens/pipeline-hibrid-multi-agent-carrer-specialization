@@ -33,6 +33,8 @@ class Settings(BaseSettings):
     BUCKET_NAME: str = ""
     S3_ENDPOINT_URL: str = ""
 
+    API_KEY: str = ""
+
     ENCRYPTION_KEY: str = ""
 
     @property
