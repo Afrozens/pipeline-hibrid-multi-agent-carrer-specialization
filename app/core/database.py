@@ -1,5 +1,8 @@
+from datetime import datetime
+
+from sqlalchemy import DateTime
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
-from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 from app.core.config import get_settings
 
@@ -10,7 +13,16 @@ async_session_factory = async_sessionmaker(engine, class_=AsyncSession, expire_o
 
 
 class Base(DeclarativeBase):
-    pass
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime, default=datetime.now
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime, default=datetime.now, onupdate=datetime.now
+    )
+    deleted_at: Mapped[datetime | None] = mapped_column(
+        DateTime, nullable=True,
+        comment="Soft-delete timestamp"
+    )
 
 
 async def get_db() -> AsyncSession:
