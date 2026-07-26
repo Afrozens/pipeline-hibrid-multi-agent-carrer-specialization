@@ -2,11 +2,22 @@ import base64
 import binascii
 import logging
 
-from app.core.utils.encrypt import Enciphering, is_sensitive_key
+from app.core.utils.encrypt import Enciphering
 
 logger = logging.getLogger(__name__)
 
-_cipher = Enciphering()
+SENSITIVE_KEY_SET = {
+    "full_name",
+    "email",
+    "phone",
+    "location",
+}
+
+_cipher = Enciphering(sensitive_keys=SENSITIVE_KEY_SET)
+
+
+def is_sensitive_key(key: str) -> bool:
+    return _cipher._is_sensitive_key(key)
 
 
 def is_already_encrypted(value: str | None) -> bool:
@@ -39,7 +50,7 @@ def is_already_encrypted(value: str | None) -> bool:
 def encrypt_if_sensitive(key: str, value: str | None) -> str | None:
     if value is None:
         return None
-    if is_sensitive_key(key):
+    if _cipher._is_sensitive_key(key):
         return _cipher._encrypt(value)
     return value
 
@@ -47,7 +58,7 @@ def encrypt_if_sensitive(key: str, value: str | None) -> str | None:
 def decrypt_if_sensitive(key: str, value: str | None) -> str | None:
     if value is None:
         return None
-    if not is_sensitive_key(key):
+    if not _cipher._is_sensitive_key(key):
         return value
     try:
         return _cipher._decrypt(value)

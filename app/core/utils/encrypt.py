@@ -7,28 +7,24 @@ from app.core.config import get_settings
 settings = get_settings()
 
 
-SENSITIVE_KEY_SET = frozenset({
-    "full_name",
-    "email",
-    "phone",
-    "location",
-})
-
-
-def is_sensitive_key(key: str) -> bool:
-    if key in SENSITIVE_KEY_SET:
-        return True
-    segments = key.split(".")
-    for i in range(len(segments), 0, -1):
-        prefix = ".".join(segments[:i])
-        if prefix in SENSITIVE_KEY_SET:
-            return True
-    return False
-
-
 class Enciphering:
-    def __init__(self):
+    _default_sensitive_keys: frozenset = frozenset()
+
+    def __init__(self, sensitive_keys: set | frozenset | None = None):
         self._encryption_key: bytes | None = None
+        self._sensitive_keys = frozenset(sensitive_keys) if sensitive_keys else self._default_sensitive_keys
+
+    def _is_sensitive_key(self, key: str) -> bool:
+        if not self._sensitive_keys:
+            return False
+        if key in self._sensitive_keys:
+            return True
+        segments = key.split(".")
+        for i in range(len(segments), 0, -1):
+            prefix = ".".join(segments[:i])
+            if prefix in self._sensitive_keys:
+                return True
+        return False
 
     def _get_cypher_key(self) -> bytes | None:
         if self._encryption_key is not None:
