@@ -10,7 +10,6 @@ SENSITIVE_KEY_SET = {
     "full_name",
     "email",
     "phone",
-    "location",
 }
 
 _cipher = Enciphering(sensitive_keys=SENSITIVE_KEY_SET)
