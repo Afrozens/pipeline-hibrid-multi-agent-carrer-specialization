@@ -104,7 +104,7 @@ async def generate_pdf_upload_response(
     except Exception as exc:
         logger.error("PDF_UPLOAD_LLM_FAILED | error=%s", exc, exc_info=True)
         return (
-            f"He procesado tu CV **{filename}**. "
-            f"Los datos se han guardado en tu perfil. "
-            f"Cuéntame si necesitas ayuda completando la información restante."
+            f"I've processed your CV **{filename}**. "
+            f"The data has been saved to your profile. "
+            f"Let me know if you need help completing the remaining information."
         )
