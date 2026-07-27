@@ -16,8 +16,16 @@ def make_close_tool(db: AsyncSession, conversation_id: UUID):
         all collected profile information is correct and complete.
         The system will handle updating both statuses.
         """
+        from app.assistant_chat.services.chat_service import close_conversation_service
         try:
             logger.info("CLOSE_CONVERSATION_WAITING")
+            farewell_msg, profile_id, _, _ = await close_conversation_service(db, conversation_id)
+            logger.info(
+                "CLOSE_CONVERSATION_EXECUTED | conversation_id=%s | profile_id=%s",
+                conversation_id,
+                profile_id,
+            )
+            return farewell_msg.content
         except Exception as ex:
             logger.info("CLOSE_CONVERSATION_ERROR | error=%s", str(ex))
             return "The conversation could not be closed at this time."
