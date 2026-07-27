@@ -8,7 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from langgraph.checkpoint.postgres.aio import AsyncPostgresSaver
 
 from app.core.config import get_settings
-from app.generation.graph import ProfilePipeline
+from app.generation.graph import build_profile_graph, set_profile_graph_instance
 from app.router import api_router
 
 settings = get_settings()
@@ -38,8 +38,8 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
         settings.langgraph_database_uri
     ) as checkpointer:
         await checkpointer.setup()
-        pipeline = ProfilePipeline(checkpointer)
-        app.state.pipeline = pipeline
+        graph = await build_profile_graph(checkpointer)
+        set_profile_graph_instance(graph)
         app.state.langgraph_checkpointer = checkpointer
         logger.info("LANGGRAPH_PIPELINE_READY | uri=%s", settings.langgraph_database_uri)
 
