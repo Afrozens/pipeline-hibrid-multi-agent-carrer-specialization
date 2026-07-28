@@ -14,7 +14,6 @@ from app.profile_student_attribute.schema import (
     ProfileStudentAttributeCreate,
 )
 from app.profile_student_attribute.utils import decrypt_if_sensitive
-from app.generation.graph import run_profile_pipeline
 from app.generation.schemas.agent_pipeline import PipelineState
 from app.generation.services.assistant_service import (
     generate_profile_assistant_response as _legacy_generate,
@@ -55,6 +54,8 @@ async def generate_profile_response_pipeline(
         thread_id = f"pipeline_{hash(last_user_msg) & 0xFFFFFFFF:08x}" if last_user_msg else "pipeline_default"
 
     try:
+        from app.generation.graph import run_profile_pipeline
+        
         final_state = await run_profile_pipeline(
             conversation_history=conversation_history,
             thread_id=thread_id,
