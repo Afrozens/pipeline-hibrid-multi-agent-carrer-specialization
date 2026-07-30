@@ -27,4 +27,5 @@ dependencies = [
     "langchain-community>=0.4.2",
     "httpx>=0.28.1",
     "pydantic>=2.13.4",
+    "alembic>=1.18.5",
 ]
