@@ -64,7 +64,7 @@ class CriticalFieldValidator:
 
     @staticmethod
     def _default_path() -> Path:
-        return Path(__file__).resolve().parents[3] / "docs" / "career_fields.json"
+        return Path(__file__).resolve().parents[2] / "docs" / "career_fields.json"
 
     def get_critical_fields_path(self) -> Path:
         return self._file_path

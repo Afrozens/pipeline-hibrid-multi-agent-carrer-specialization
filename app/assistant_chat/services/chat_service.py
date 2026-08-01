@@ -59,6 +59,7 @@ async def create_and_link_profile(
     conversation.profile_id = profile.id
     await db.flush()
     await db.commit()
+    await db.refresh(profile, ["attributes"])
     logger.info(
         "CHAT_PROFILE_CREATED | conversation_id=%s | profile_id=%s",
         conversation.id,

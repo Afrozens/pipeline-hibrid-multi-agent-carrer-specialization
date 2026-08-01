@@ -78,7 +78,7 @@ async def generate_pdf_upload_response(
 
     prompt = _load_cv_upload_prompt()
 
-    parts = prompt.split("---CV MARKDOWN CONTENT---")
+    parts = prompt.split("## CV_UPLOAD_PROMPT")
     upload_prompt = parts[-1] if len(parts) >= 2 else prompt
 
     system_prompt = upload_prompt.format(
